@@ -1,6 +1,9 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import { Button, Layout } from 'antd';
+import LeftNav from '../../components/LeftNav';
+import User from '../User/user'
+import Authority from '../Authority/authority '
 import './admin.css'
 
 export default function Admin(props) {
@@ -26,8 +29,16 @@ export default function Admin(props) {
           <Button type="primary" onClick={logOut}>退出登录</Button>
         </Header>
         <Layout>
-          <Sider>Sider</Sider>
-          <Content>Content</Content>
+          <Sider>
+            <LeftNav />
+          </Sider>
+          <Content>
+            <Switch>
+              <Route path='/user' component={User} />
+              <Route path='/authority' component={Authority} />
+              <Redirect to='/user' />
+            </Switch>
+          </Content>
         </Layout>
       </Layout>
     </div>
