@@ -1,0 +1,22 @@
+.user .content {
+  height: 100%;
+  background: #fff;
+  margin: 10px;
+  padding: 10px;
+}
+.user .content .search {
+  display: flex;
+}
+.user .content .search .ant-input-group-wrapper {
+  width: 400px;
+}
+.user .content .search .ant-input-group-wrapper .ant-input-group > .ant-input:first-child,
+.user .content .search .ant-input-group-wrapper .ant-input-group-addon:first-child {
+  height: 32px;
+}
+.user .content .table {
+  margin: 20px 0;
+}
+.user .content .table .ant-table-pagination.ant-pagination {
+  display: none;
+}

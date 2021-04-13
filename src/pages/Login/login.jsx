@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import api from '../../methods/api'
+import { LoginApi } from '../../methods/api'
 import { Form, Input, Button, message } from 'antd';
 import './login.css'
 
@@ -29,12 +29,12 @@ function Login(props) {
 
   //登录按钮输入值有效
   const onFinish = (values) => {
-    api('login', values, 'POST').then(res => {
+    LoginApi('login', values, 'POST').then(res => {
       if (res.data?.meta?.status === 200) {
         message.success('登陆成功！！！')
         setTimeout(() => {
           props.history.replace("/")
-        }, 100) 
+        }, 100)
         localStorage.setItem("token", res.data.data.token);
       } else {
         message.error('用户名或密码有误！！！')
