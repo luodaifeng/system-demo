@@ -30,7 +30,14 @@ function request(url, data = {}, type = 'GET') {
   } else if (type === 'DELETE') {
     return axios.delete(wz + url)
   } else if (type === 'PUT') {
-    return axios.put(wz + url)
+    if (Object.keys(data).length > 0) {
+      return axios.put(wz + url, {
+        ...data
+      })
+    } else {
+      return axios.put(wz + url)
+    }
+
   } else {
     return axios.post(wz + url, {
       ...data

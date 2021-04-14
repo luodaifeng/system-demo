@@ -5,6 +5,8 @@ import { Input, Button, Table, Switch, Spin, Pagination, message, Tooltip } from
 import { AimOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import AddUser from './modal/addUser'
 import DelUser from './modal/delUser'
+import QueryUser from './modal/queryUser'
+
 
 import './user.css'
 export default function User() {
@@ -26,9 +28,14 @@ export default function User() {
 
   const [delUserT, setDelUserT] = useState(false) //添加用户弹出框
 
+  const [queryUserT, setQueryUserT] = useState(false) //添加用户弹出框
+
+
   const [delUserId, setDelUserId] = useState(0) //用户id
 
   const [delState, setDelState] = useState(false)
+
+  const [userInformation, setUserInformation] = useState({})
 
   const getData = (url, data, type = 'GET') => {
     request(url, { ...data }, type).then(res => {
@@ -59,14 +66,16 @@ export default function User() {
 
   //switch开关
   const switchClick = (v) => {
-    console.log(v);
+    setLoading(true)
     request(`users/${v.id}/state/${!v.mg_state}`, {}, 'PUT').then(res => {
       setDelState(!delState)
       if (res.data.meta.status === 200) {
         message.success('设置用户状态成功！！！！')
-      } else (
+        setLoading(false)
+      } else {
         message.success('设置用户状态失败！！！！')
-      )
+        setLoading(false)
+      }
     })
   }
 
@@ -95,9 +104,35 @@ export default function User() {
   const userDelete = (v) => {
     setDelUserId(v.id)
     setDelUserT(true)
-
   }
 
+  //用户查询
+  const userQuery = (v) => {
+    setLoading(true)
+    request('users/' + v.id, {}, "GET").then(res => {
+      setUserInformation([])
+      if (res.data.meta.status === 200) {
+        setUserInformation(res.data.data)
+        setQueryUserT(true)
+        setLoading(false)
+      } else {
+        message.error('获取用户信息失败！！！')
+        setLoading(false)
+      }
+    })
+  }
+
+  //修改用户
+  const modifyUser = (id, data) => {
+    request('users/' + id, data, "PUT").then(res => {
+      if (res.data.meta.status === 200) {
+        setDelState(!delState)
+        message.success('修改用户信息成功！！！！')
+      } else {
+        message.error('修改用户信息失败！！！')
+      }
+    })
+  }
   const columns = [
     {
       title: 'id',
@@ -140,8 +175,10 @@ export default function User() {
       key: '',
       render: (operation, value) => (
         <>
-          <Button type="primary" shape="circle" icon={<EditOutlined />} />
-          <Tooltip title="删除" color='#ff4d4f' key={1}>
+          <Tooltip title="查询" color='#1890ff' key='#1890ff'>
+            <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={() => { userQuery(value) }} />
+          </Tooltip>
+          <Tooltip title="删除" color='#ff4d4f' key='#ff4d4f'>
             <Button type="primary" shape="circle" danger icon={<DeleteOutlined />} style={{ margin: '0 10px' }} onClick={() => { userDelete(value) }} />
           </Tooltip>
           <Button type="primary" shape="circle" icon={<AimOutlined />} style={{ background: '#e09423', borderColor: '#e09423' }} />
@@ -187,6 +224,12 @@ export default function User() {
         delUserHandleCancel={() => { setDelUserT(false) }}
         delUserHandleOk={() => { setDelState(!delState) }}
         id={delUserId}
+      />
+      <QueryUser
+        data={userInformation}
+        state={queryUserT}
+        handleCancel={() => { setQueryUserT(false) }}
+        modifyUser={(id, data) => { modifyUser(id, data) }}
       />
     </div>
   )

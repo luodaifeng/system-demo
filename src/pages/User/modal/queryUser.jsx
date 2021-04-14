@@ -1,7 +1,9 @@
 import React from 'react'
 import { Modal, Button, Form, Input } from 'antd';
-export default function AddUser({ state, handleCancel, onFinish }) {
+export default function QueryUser({ data, state, handleCancel, modifyUser }) {
 
+  const { username = '', email = '', mobile = '', id = '' } = data || {}
+  console.log(mobile);
   const [form] = Form.useForm();
 
   const layout = {
@@ -13,18 +15,18 @@ export default function AddUser({ state, handleCancel, onFinish }) {
     wrapperCol: { offset: 14, span: 16 },
   };
 
+  const onFinish = (v) => {
+    modifyUser(id, v)
+    handleCancel()
+  };
+
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
-
-  const onReset = () => {
-    form.resetFields()
-    handleCancel()
-  }
   return (
     <div>
       <Modal
-        title="添加用户"
+        title="修改用户信息"
         visible={state}
         // confirmLoading={confirmLoading}
         onCancel={handleCancel}
@@ -41,39 +43,28 @@ export default function AddUser({ state, handleCancel, onFinish }) {
         >
           <Form.Item
             label="用户名"
-            name="username"
-            rules={[{ required: true, message: '用户名不能为空' }]}
           >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="密码"
-            name="password"
-            rules={[{ required: true, message: '密码不能为空' }]}
-          >
-            <Input.Password />
+            <Input disabled placeholder={username || ''} />
           </Form.Item>
           <Form.Item
             label="邮箱"
             name="email"
             rules={[{ required: true, message: '邮箱不能为空' }]}
           >
-            <Input />
-          </Form.Item> <Form.Item
+            <Input placeholder={email || ''} />
+          </Form.Item>
+          <Form.Item
             label="手机号"
             name="mobile"
             rules={[{ required: true, message: '手机号不能为空' }]}
           >
-            <Input />
+            <Input placeholder={mobile || ''} />
           </Form.Item>
           <Form.Item {...tailLayout}>
-            <Button type="primary"
-              onClick={onReset}
-              style={{ margin: '0 8px' }}>
-              重置
+            <Button style={{ margin: '0 8px' }} onClick={() => { handleCancel() }}>
+              取消
         </Button>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" >
               确定
         </Button>
           </Form.Item>
